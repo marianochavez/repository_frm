@@ -1,4 +1,4 @@
-import { MsalConfig } from "../interfaces/azure";
+import { MsalConfig } from "../types/azure";
 
 export const msalConfig: MsalConfig = {
     auth: {
