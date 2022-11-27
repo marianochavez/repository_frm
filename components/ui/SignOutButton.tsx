@@ -3,9 +3,10 @@ import { useContext } from "react";
 import { AuthContext } from "../../context/auth/AuthContext";
 
 const SignOutButton = () => {
-  const { signOut } = useContext(AuthContext);
+  const { signOutUser } = useContext(AuthContext);
+
   return (
-    <Button colorScheme="purple" variant="outline" onClick={signOut}>
+    <Button colorScheme="purple" variant="outline" onClick={signOutUser}>
       Cerrar sesión
     </Button>
   );

@@ -13,14 +13,14 @@ type Data = {
 
 export default function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
     switch (req.method) {
-        case "POST":
-            return registerUser(req, res);
+        // case "POST":
+        //     return registerUser(req, res);
 
         default:
             res.status(405).json({ success: false, message: "Method Not Allowed" });
     }
 }
-
+// ! UNUSED -------------
 async function registerUser(req: NextApiRequest, res: NextApiResponse<Data>) {
     const { name = "", email = "" } = req.body as { name: string; email: string };
 

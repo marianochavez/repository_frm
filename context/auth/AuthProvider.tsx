@@ -1,7 +1,5 @@
-import { useIsAuthenticated, useMsal } from "@azure/msal-react";
-import { useEffect, useState } from "react";
+import { signIn, signOut, useSession } from "next-auth/react";
 
-import { loginRequest } from "../../utils/authConfig";
 import { AuthContext } from "./AuthContext";
 
 interface Props {
@@ -9,42 +7,20 @@ interface Props {
 }
 
 export const AuthProvider: React.FC<Props> = ({ children }) => {
-  const { instance: msalInstance, accounts } = useMsal();
-  const [accessToken, setAccessToken] = useState("");
+  const {data:session, status} = useSession();
+  const isAuthenticated = !!(status === "authenticated");
 
-  useEffect(() => {
-    if (accounts.length === 0) return;
-    const request = {
-      ...loginRequest,
-      account: accounts[0],
-    };
-    console.log("effect")
-
-    msalInstance
-      .acquireTokenSilent(request)
-      .then((res) => setAccessToken(res.accessToken))
-      .catch((e) =>
-        msalInstance
-          .acquireTokenPopup(request)
-          .then((res) => setAccessToken(res.accessToken))
-      );
-  }, [accounts, msalInstance]);
-
-  console.log(accessToken);
-
-  async function signIn() {
+  async function signInUser () {
     try {
-      await msalInstance.loginRedirect(loginRequest);
+      await signIn("azure-ad");
     } catch (error) {
       console.log(error);
     }
   }
 
-  async function signOut() {
+  async function signOutUser() {
     try {
-      msalInstance.logoutRedirect({
-        postLogoutRedirectUri: "/",
-      });
+      await signOut();
     } catch (error) {
       console.log(error);
     }
@@ -53,10 +29,10 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
   return (
     <AuthContext.Provider
       value={{
-        accounts,
-        accessToken,
-        signIn,
-        signOut,
+        session,
+        isAuthenticated,
+        signInUser,
+        signOutUser,
       }}
     >
       {children}

@@ -1,6 +1,7 @@
 import { useContext } from "react";
-import { AuthenticatedTemplate, useIsAuthenticated } from "@azure/msal-react";
 import {
+  Box,
+  Center,
   Drawer,
   DrawerBody,
   DrawerCloseButton,
@@ -16,8 +17,7 @@ import SignOutButton from "./SignOutButton";
 import SignInButton from "./SignInButton";
 
 const Sidebar = () => {
-  const { accounts } = useContext(AuthContext);
-  const isAuthenticated = useIsAuthenticated();
+  const { session, isAuthenticated } = useContext(AuthContext);
   const {
     drawer: { isOpen, onClose },
   } = useContext(UIContext);
@@ -28,10 +28,18 @@ const Sidebar = () => {
       <DrawerContent>
         <DrawerCloseButton />
         <DrawerHeader>
-          {isAuthenticated ? accounts[0].name : "Inicia sesión"}
+          {isAuthenticated ? session?.user?.name : "Bienvenido!"}
         </DrawerHeader>
 
-        <DrawerBody>{!isAuthenticated ? <SignInButton /> : "Bien"}</DrawerBody>
+        <DrawerBody>
+          {!isAuthenticated ? (
+            <Center h="100%">
+              <SignInButton />
+            </Center>
+          ) : (
+            "Bien"
+          )}
+        </DrawerBody>
 
         <DrawerFooter>{isAuthenticated && <SignOutButton />}</DrawerFooter>
       </DrawerContent>

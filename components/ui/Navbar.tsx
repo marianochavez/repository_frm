@@ -1,16 +1,10 @@
-import { useIsAuthenticated } from "@azure/msal-react";
 import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
 import { useContext } from "react";
 import { BiMenu } from "react-icons/bi";
-import { AuthContext } from "../../context/auth/AuthContext";
 import { UIContext } from "../../context/ui/UIContext";
 
-import SignInButton from "./SignInButton";
-import SignOutButton from "./SignOutButton";
 
 const Navbar = () => {
-  const isAuthenticated = useIsAuthenticated();
-
   return (
     <Box
       position="sticky"
@@ -23,7 +17,7 @@ const Navbar = () => {
         <Text fontSize="2xl">Repositorio FRM</Text>
 
         <Box flex={1} textAlign="end">
-          {isAuthenticated ? <DrawerButton /> : <SignInButton />}
+          <DrawerButton />
         </Box>
       </Flex>
     </Box>
