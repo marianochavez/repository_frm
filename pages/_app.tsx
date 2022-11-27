@@ -5,6 +5,8 @@ import { MsalProvider } from "@azure/msal-react";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { SessionProvider } from "next-auth/react";
 import { ChakraProvider } from "@chakra-ui/react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 import { AuthProvider } from "../context/auth/AuthProvider";
 import { msalConfig } from "../utils/authConfig";
@@ -15,6 +17,7 @@ export default function App({
   pageProps: { session, ...pageProps },
 }: AppProps) {
   const msalInstance = new PublicClientApplication(msalConfig);
+  const queryClient = new QueryClient();
 
   return (
     <MsalProvider instance={msalInstance}>
@@ -22,7 +25,10 @@ export default function App({
         <AuthProvider>
           <ChakraProvider>
             <UIProvider>
-              <Component {...pageProps} />
+              <QueryClientProvider client={queryClient}>
+                <ReactQueryDevtools />
+                <Component {...pageProps} />
+              </QueryClientProvider>
             </UIProvider>
           </ChakraProvider>
         </AuthProvider>

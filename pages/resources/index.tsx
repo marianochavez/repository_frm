@@ -1,33 +1,54 @@
-import { GetServerSideProps } from 'next'
-import repositoryApi from '../../api/repositoryApi'
-import PageLayout from "../../components/layouts/PageLayout"
-import { IDeparment } from '../../types/department'
+import { Box, Button, Flex } from "@chakra-ui/react";
+import { GetServerSideProps } from "next";
+import { useState } from "react";
+import repositoryApi from "../../api/repositoryApi";
+import CourseList from "../../components/CourseList";
+import PageLayout from "../../components/layouts/PageLayout";
+import { dbDepartments } from "../../database";
+import { useCourses } from "../../hooks/useCourses";
+import { IDeparment } from "../../types/department";
 
 type Props = {
-  departments: IDeparment;
-}
+  departments: IDeparment[];
+};
 
-function ResourcesPage({departments}:Props) {
-  console.log(departments);
-  
+function ResourcesPage({ departments }: Props) {
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const { coursesQuery } = useCourses({ department: selectedDepartment });
+
   return (
     <PageLayout>
-      Recursos
+      <Flex flexDir="column" gap={5} px={20} py={2}>
+        {departments.map((department) => (
+          <Box key={department.name}>
+            <Button
+              onClick={() =>
+                setSelectedDepartment(
+                  selectedDepartment === department.name ? "" : department.name
+                )
+              }
+            >
+              {department.name}
+            </Button>
+            {selectedDepartment === department.name &&
+              coursesQuery.isSuccess && (
+                <CourseList courses={coursesQuery.data.data || []} />
+              )}
+          </Box>
+        ))}
+      </Flex>
     </PageLayout>
-  )
+  );
 }
 
-// You should use getServerSideProps when:
-// - Only if you need to pre-render a page whose data must be fetched at request time
-
 export const getServerSideProps: GetServerSideProps = async () => {
-  const {data} = await repositoryApi.get("/department");
+  const departments = await dbDepartments.getAllDepartments();
 
   return {
     props: {
-      departments: data
-    }
-  }
-}
+      departments,
+    },
+  };
+};
 
-export default ResourcesPage
+export default ResourcesPage;

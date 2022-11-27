@@ -12,6 +12,8 @@ const Navbar = () => {
       h="70px"
       borderBottom="1px"
       borderColor="gray.100"
+      bg="white"
+      zIndex={99}
     >
       <Flex alignItems="center" p={4}>
         <Text fontSize="2xl">Repositorio FRM</Text>
