@@ -1,8 +1,8 @@
 export type IUser = {
-    _id: string;
+    _id?: string;
     name: string;
     email: string;
-    role: string;
+    role: "user" | "admin";
 
     createdAt?: string;
     updatedAt?: string;

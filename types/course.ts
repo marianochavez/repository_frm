@@ -1,13 +1,9 @@
 import { IDeparment } from "./department";
 
-export type Plan = {
-    year: "2008" | "2022";
-}
-
 export type ICourse = {
-    _id: string;
+    _id?: string;
     name: string;
-    plan: Plan;
+    plan: "2008" | "2022";
     department: IDeparment | string;
 
     createdAt?:string;

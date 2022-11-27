@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import {
   Box,
+  Button,
   Center,
   Drawer,
   DrawerBody,
@@ -9,12 +10,14 @@ import {
   DrawerFooter,
   DrawerHeader,
   DrawerOverlay,
+  Flex,
 } from "@chakra-ui/react";
 
 import { AuthContext } from "../../context/auth/AuthContext";
 import { UIContext } from "../../context/ui/UIContext";
 import SignOutButton from "./SignOutButton";
 import SignInButton from "./SignInButton";
+import Link from "next/link";
 
 const Sidebar = () => {
   const { session, isAuthenticated } = useContext(AuthContext);
@@ -37,13 +40,27 @@ const Sidebar = () => {
               <SignInButton />
             </Center>
           ) : (
-            "Bien"
+            <Flex flexDir="column" gap={2}>
+              <SidebarButton name="Inicio" href="/" />
+              <SidebarButton name="Recursos" href="/resources" />
+            </Flex>
           )}
         </DrawerBody>
 
         <DrawerFooter>{isAuthenticated && <SignOutButton />}</DrawerFooter>
       </DrawerContent>
     </Drawer>
+  );
+};
+
+const SidebarButton = ({ href, name }: { href: string; name: string }) => {
+  const {
+    drawer: { onClose },
+  } = useContext(UIContext);
+  return (
+    <Button onClick={onClose} as={Link} href={href}>
+      {name}
+    </Button>
   );
 };
 

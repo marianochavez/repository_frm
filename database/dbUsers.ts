@@ -1,5 +1,6 @@
+import { db } from ".";
 import User from "../models/User";
-import db from "./db";
+
 
 export async function oauthToDBUser(oauthEmail: string, oauthName: string) {
     await db.connect();

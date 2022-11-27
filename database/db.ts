@@ -14,7 +14,7 @@ const mongoConnection = {
  * It connects to MongoDB if it's not already connected
  * @returns A promise that resolves to void.
  */
-const connect = async (): Promise<void> => {
+export const connect = async (): Promise<void> => {
   if (mongoConnection.isConnected) {
     console.log("Already connected to mongo");
 
@@ -43,7 +43,7 @@ const connect = async (): Promise<void> => {
  * Only for production mode.
  * @returns A promise that resolves to void
  */
-const disconnect = async (): Promise<void> => {
+export const disconnect = async (): Promise<void> => {
   if (process.env.NODE_ENV === "development") return;
 
   if (mongoConnection.isConnected === 0) return;
@@ -53,7 +53,3 @@ const disconnect = async (): Promise<void> => {
 
   console.log("Disconnected from MongoDB");
 };
-
-const db = { connect, disconnect };
-
-export default db;
