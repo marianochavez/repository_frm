@@ -2,6 +2,7 @@ import { useIsAuthenticated } from "@azure/msal-react";
 import { Box, Flex, IconButton, Text } from "@chakra-ui/react";
 import { useContext } from "react";
 import { BiMenu } from "react-icons/bi";
+import { AuthContext } from "../../context/auth/AuthContext";
 import { UIContext } from "../../context/ui/UIContext";
 
 import SignInButton from "./SignInButton";

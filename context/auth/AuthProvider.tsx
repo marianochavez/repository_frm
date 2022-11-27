@@ -18,6 +18,7 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
       ...loginRequest,
       account: accounts[0],
     };
+    console.log("effect")
 
     msalInstance
       .acquireTokenSilent(request)
@@ -28,6 +29,8 @@ export const AuthProvider: React.FC<Props> = ({ children }) => {
           .then((res) => setAccessToken(res.accessToken))
       );
   }, [accounts, msalInstance]);
+
+  console.log(accessToken);
 
   async function signIn() {
     try {
