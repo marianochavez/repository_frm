@@ -43,6 +43,7 @@ const Sidebar = () => {
             <Flex flexDir="column" gap={2}>
               <SidebarButton name="Inicio" href="/" />
               <SidebarButton name="Recursos" href="/resources" />
+              <SidebarButton name="Mis Aportes" href="/contributions" />
             </Flex>
           )}
         </DrawerBody>

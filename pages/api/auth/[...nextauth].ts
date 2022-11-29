@@ -19,8 +19,7 @@ export default NextAuth({
   },
   callbacks: {
     async session({ session, token }) {
-      const { email, name, role } = token.user as any;
-      session.user = { email, name, role } as any;
+      session.user = token.user as any;
       (session as any).accessToken = token.accessToken;
 
       return session;

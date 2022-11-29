@@ -23,7 +23,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
 async function getDepartments(req: NextApiRequest, res: NextApiResponse<Data | DataError>){
     await db.connect();
-
+    // TODO: refactor
     const departments = await Department.find().select("name -_id").lean();
 
     await db.disconnect();
