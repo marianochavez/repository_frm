@@ -7,11 +7,13 @@ interface Props {
 
 export const UIProvider: React.FC<Props> = ({ children }) => {
   const drawer = useDisclosure();
+  const newCourseModal = useDisclosure();
 
   return (
     <UIContext.Provider
       value={{
         drawer,
+        newCourseModal
       }}
     >
       {children}
