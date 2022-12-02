@@ -4,7 +4,7 @@ import Department from "../models/Department";
 export async function getAllDepartments() {
     await db.connect();
 
-    const departments = await Department.find().select("name -_id").lean();
+    const departments = await Department.find().lean();
 
     await db.disconnect();
 

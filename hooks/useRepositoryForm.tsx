@@ -2,18 +2,21 @@ import { useForm } from "react-hook-form";
 import repositoryApi from "../api/repositoryApi";
 import { IRepository } from "../types/repository";
 
-type RepositoryForm = Pick<IRepository, "url" | "course" | "user">;
+type RepositoryForm = Pick<IRepository, "url">;
 
-const useRepositoryForm = () => {
+type UseRepositoryFormProps = {
+  course: string;
+  user: string;
+};
+
+const useRepositoryForm = ({ course, user }: UseRepositoryFormProps) => {
   const { register, handleSubmit, reset, formState } = useForm({
     defaultValues: {
       url: "",
-      course: "",
-      user: "",
     } as RepositoryForm,
   });
 
-  const onSubmit = async ({ url, course, user }: RepositoryForm) => {
+  const onSubmit = async ({ url }: RepositoryForm) => {
     console.log({ url, course, user });
     try {
       const res = await repositoryApi.post("/repositories", {

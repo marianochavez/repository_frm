@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { db } from '../../../database';
+import { db, dbDepartments } from '../../../database';
 import Department from '../../../models/Department';
 import { IDeparment } from '../../../types/department'
 
@@ -22,11 +22,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 }
 
 async function getDepartments(req: NextApiRequest, res: NextApiResponse<Data | DataError>){
-    await db.connect();
-    // TODO: refactor
-    const departments = await Department.find().select("name -_id").lean();
-
-    await db.disconnect();
+    const departments = await dbDepartments.getAllDepartments();
 
     if(!departments) {
         return res.status(400).json({message: "No se encontró ningún Departamento"});

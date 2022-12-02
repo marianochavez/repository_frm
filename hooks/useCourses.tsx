@@ -11,7 +11,9 @@ const getCourses = async ({ department }: GetCoursesProps) => {
 
   if (department) params.append("department", department);
 
-  const { data } = await repositoryApi.get<{data:ICourse[]}>("/courses", { params });
+  const { data } = await repositoryApi.get<{ data: ICourse[] }>("/courses", {
+    params,
+  });
 
   return data;
 };
@@ -21,8 +23,12 @@ type Props = {
 };
 
 export const useCourses = ({ department }: Props) => {
-  const coursesQuery = useQuery(["courses", { department }], () =>
-    getCourses({ department })
+  const coursesQuery = useQuery(
+    ["courses", { department }],
+    () => getCourses({ department }),
+    {
+      enabled: !!department,
+    }
   );
 
   return {
