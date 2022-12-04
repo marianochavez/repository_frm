@@ -4,7 +4,7 @@ import mongoose, { Schema, model } from "mongoose";
 import { IRepository } from "../types/repository";
 
 const repositorySchema = new Schema({
-    url: { type: String, required: true, unique: true },
+    url: { type: String, required: true, unique: true, maxLength: 2048 },
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     course: { type: Schema.Types.ObjectId, ref: "Course", required: true },
 },

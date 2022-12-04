@@ -15,7 +15,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Text,
@@ -23,15 +22,14 @@ import {
 
 import { UIContext } from "../context/ui/UIContext";
 import useRepositoryForm from "../hooks/useRepositoryForm";
-import useRepositories from "../hooks/useRepositories";
 import { useCourses } from "../hooks/useCourses";
 import { useDepartments } from "../hooks/useDepartments";
 import { IDeparment } from "../types/department";
 import { ICourse } from "../types/course";
-import { AuthContext } from "../context/auth/AuthContext";
+import { isUrl } from "../utils/validations";
 
 const NewCourseModal = () => {
-  const { session } = useContext(AuthContext);
+  // TODO: refactor
   const {
     newCourseModal: { isOpen, onClose },
   } = useContext(UIContext);
@@ -42,17 +40,22 @@ const NewCourseModal = () => {
   const {
     register,
     handleSubmitForm,
+    success,
+    reset,
     formState: { errors, isSubmitting, isSubmitSuccessful },
   } = useRepositoryForm({
     course: selectedCourse?._id!,
-    user: session?.user._id!,
   });
 
   useEffect(() => {
-    if (isSubmitSuccessful) onClose();
-  }, [isSubmitSuccessful, onClose]);
+    if (success) {
+      onClose();
+      reset();
+      handleSelectDepartment(null);
+    }
+  }, [success, onClose, reset]);
 
-  const handleSelectDepartment = (department: IDeparment) => {
+  const handleSelectDepartment = (department: IDeparment | null) => {
     setSelectedDepartment(department);
     setSelectedCourse(null);
   };
@@ -69,18 +72,18 @@ const NewCourseModal = () => {
         <ModalBody>
           <form onSubmit={handleSubmitForm} noValidate>
             <Flex flexDir="column" gap={4}>
-              <FormControl isInvalid={!!errors.url}>
+              <FormControl isInvalid={!!errors.url} isRequired>
                 <FormLabel>Link</FormLabel>
                 <Input
                   id="url"
                   type="text"
                   {...register("url", {
                     required: true,
+                    validate: isUrl,
                     maxLength: {
-                      value: 500,
+                      value: 2048,
                       message: "El link debe ser de menos de 500 caracteres",
                     },
-                    // TODO: agregar validacion de link
                   })}
                 />
                 {errors.url && (
@@ -135,13 +138,13 @@ const MenuDepartments = ({ department, onChange }: MenuDepartmentsProps) => {
   const { departmentsQuery } = useDepartments();
 
   return (
-    <Menu closeOnSelect={true} placement="start">
+    <Menu closeOnSelect={true} placement="auto">
       <MenuButton
         as={Button}
         colorScheme={`${department ? "green" : "red"}`}
         variant="outline"
       >
-        {department ? department.name : "Departamento"}
+        {department ? department.name : "Seleccione un departamento"}
       </MenuButton>
 
       {departmentsQuery.isLoading ? (
@@ -175,17 +178,17 @@ const MenuCourses = ({ department, course, onChange }: MenuCoursesProps) => {
   const { coursesQuery } = useCourses({ department: department?.name || "" });
 
   return (
-    <Menu closeOnSelect={true} placement="end-end">
+    <Menu closeOnSelect={true} placement="auto">
       <MenuButton
         disabled={!department}
         as={Button}
         colorScheme={`${course ? "green" : department ? "red" : "blackAlpha"}`}
         variant="outline"
       >
-        {course ? course.name : "Materia"}
+        {course ? course.name : "Seleccione una materia"}
       </MenuButton>
 
-      <MenuList maxH="calc(100vh - 5px)" overflowY="scroll">
+      <MenuList maxH="calc(100vh - 300px)" overflowY="scroll">
         <MenuOptionGroup title={`Materias de ${department?.name}`} type="radio">
           {coursesQuery.data?.data.map((course) => (
             <MenuItemOption

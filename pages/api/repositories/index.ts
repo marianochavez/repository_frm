@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
+import { getSession } from 'next-auth/react';
 
-import { dbRepositories } from '../../../database';
+import { dbCourses, dbRepositories } from '../../../database';
+import { ICourse } from '../../../types/course';
 import { IRepository } from '../../../types/repository';
+import { IUser } from '../../../types/user';
 
 type Data = {
     data: IRepository[] | IRepository;
@@ -43,7 +46,21 @@ async function getRepositories(req: NextApiRequest, res: NextApiResponse<Data | 
 }
 
 async function createRepository(req: NextApiRequest, res: NextApiResponse<Data | DataError>) {
-    const { url = "", course = "", user = "" } = req.body as { url: string; course: string; user: string }
+    const { url = "", course = "" } = req.body as { url: string; course: string; user: string };
+
+    const session = await getSession({ req });
+
+    if (!session) {
+        return res.status(401).end(`Unauthorized`);
+    }
+
+    const courseDb = await dbCourses.getCourseById(course);
+
+    if (!courseDb) {
+        return res.status(400).json({ message: "No se encuentra un curso con ese id" });
+    }
+
+    const user = session.user._id;
 
     const repository = await dbRepositories.createRepository({ url, course, user });
 
@@ -51,5 +68,5 @@ async function createRepository(req: NextApiRequest, res: NextApiResponse<Data |
         return res.status(400).json({ message: repository.message });
     }
 
-    return res.status(200).json({ data: (repository as IRepository) });
+    return res.status(200).json({ data: { _id: repository._id, url: repository.url!, user, course: courseDb } });
 }

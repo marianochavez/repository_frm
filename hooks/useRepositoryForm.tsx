@@ -1,3 +1,5 @@
+import { useToast } from "@chakra-ui/react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import repositoryApi from "../api/repositoryApi";
 import { IRepository } from "../types/repository";
@@ -6,10 +8,11 @@ type RepositoryForm = Pick<IRepository, "url">;
 
 type UseRepositoryFormProps = {
   course: string;
-  user: string;
 };
 
-const useRepositoryForm = ({ course, user }: UseRepositoryFormProps) => {
+const useRepositoryForm = ({ course }: UseRepositoryFormProps) => {
+  const toast = useToast();
+  const [success, setSuccess] = useState(false);
   const { register, handleSubmit, reset, formState } = useForm({
     defaultValues: {
       url: "",
@@ -17,25 +20,39 @@ const useRepositoryForm = ({ course, user }: UseRepositoryFormProps) => {
   });
 
   const onSubmit = async ({ url }: RepositoryForm) => {
-    console.log({ url, course, user });
     try {
-      const res = await repositoryApi.post("/repositories", {
+        const {data} = await repositoryApi.post("/repositories", {
         url,
         course,
-        user,
       });
-      console.log(res);
-      // TODO: mostrar toast
-      reset();
-    } catch (error) {
-      console.error(error);
+      toast({
+        title: "Repositorio creado",
+        description: `Realizaste un aporte a ${data.data.course.name}`,
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+        position: "top-right",
+      })
+      setSuccess(true);
+    } catch (error: any) {
+      toast({
+        title: "Error",
+        description: error.response.data.message,
+        status: "error",
+        duration: 7000,
+        isClosable: true,
+        position: "top-right",
+      })
+      setSuccess(false);
     }
   };
 
   return {
     register,
     handleSubmitForm: handleSubmit(onSubmit),
+    reset,
     formState,
+    success,
   };
 };
 
