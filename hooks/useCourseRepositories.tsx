@@ -28,7 +28,7 @@ type Props = {
   course: IRepository["_id"];
 };
 
-const useRepositories = ({ course }: Props) => {
+const useCourseRepositories = ({ course }: Props) => {
   const [page, setPage] = useState(1);
 
   useEffect(() => {
@@ -57,4 +57,4 @@ const useRepositories = ({ course }: Props) => {
   };
 };
 
-export default useRepositories;
+export default useCourseRepositories;

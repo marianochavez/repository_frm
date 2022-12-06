@@ -27,11 +27,40 @@ export async function getRepositoriesByCourse(courseId: string) {
     if (!isValidObjectId(courseId)) return;
 
     await db.connect();
-    const repositories = await Repository.find({ course: courseId }).lean();
+    const repositories = await Repository.find({ course: courseId });
 
     await db.disconnect();
 
     return repositories;
+}
+
+export async function getRepositoriesByUserAndCourse({ userId, courseId }: { userId: string; courseId: string; }) {
+    if (!isValidObjectId(courseId)) return;
+
+    await db.connect();
+    const repositories = await Repository.find({ user: userId, course: courseId });
+
+    await db.disconnect();
+
+    return repositories;
+}
+
+export async function getRepositoriesByUserOrCourse({ userId, courseId }: { userId: string; courseId: string; }) {
+    if (isValidObjectId(userId)) {
+        await db.connect();
+        const repositories = await Repository.find({ user: userId });
+
+        await db.disconnect();
+
+        return repositories;
+    } else if (isValidObjectId(courseId)) {
+        await db.connect();
+        const repositories = await Repository.find({ course: courseId });
+
+        await db.disconnect();
+
+        return repositories;
+    }
 }
 
 type CreateRepoProps = {
@@ -67,11 +96,11 @@ export async function createRepository({ url, course, user }: CreateRepoProps) {
     return { _id, url, course, user };
 }
 
-export async function deleteRepository(id:string): Promise<{deletedCount: number} | undefined> {
-    if(!isValidObjectId(id)) return;
+export async function deleteRepository(id: string): Promise<{ deletedCount: number } | undefined> {
+    if (!isValidObjectId(id)) return;
 
     await db.connect();
-    const deletedCount = await Repository.deleteOne({_id:id});
+    const deletedCount = await Repository.deleteOne({ _id: id });
     await db.disconnect();
 
     return deletedCount;

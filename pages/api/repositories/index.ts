@@ -28,19 +28,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 }
 
 async function getRepositories(req: NextApiRequest, res: NextApiResponse<Data | DataError>) {
-    const { course = "" } = req.query as { course: string };
+    const { course = "", user = "" } = req.query as { course: string; user: string; };
+    let repositories: any;
 
-    if (course) {
-        const repositories = await dbRepositories.getRepositoriesByCourse(course);
-
-        if (!repositories) {
-            return res.status(400).json({ message: `No hay se encontraron repositorios para ${course}` })
-        }
-
-        return res.status(200).json({ data: repositories });
+    if (user && course) {
+        repositories = await dbRepositories.getRepositoriesByUserAndCourse({ userId: user, courseId: course });
+    } else if (user || course) {
+        repositories = await dbRepositories.getRepositoriesByUserOrCourse({ userId: user, courseId: course });
+    } else {
+        repositories = await dbRepositories.getAllRepositories();
     }
 
-    const repositories = await dbRepositories.getAllRepositories();
+    if (repositories?.length === 0) {
+        return res.status(400).json({ message: `No hay se encontraron repositorios` })
+    }
 
     return res.status(200).json({ data: repositories });
 }

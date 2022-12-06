@@ -1,9 +1,9 @@
 import { useContext, useMemo } from "react";
 import { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
 import { Box, Button, Flex, Heading, IconButton } from "@chakra-ui/react";
-import { CellContext, ColumnDef } from "@tanstack/react-table";
+import { ColumnDef } from "@tanstack/react-table";
 import { BiTrash } from "react-icons/bi";
 
 import ContrubutionsTable from "../../components/ContrubutionsTable";
@@ -14,15 +14,23 @@ import { dbRepositories } from "../../database";
 import { getCleanDomain } from "../../utils/url";
 import { IRepository } from "../../types/repository";
 import repositoryApi from "../../api/repositoryApi";
+import useUserRepositories from "../../hooks/useUserRepositories";
 
 type Props = {
   repositories: IRepository[];
 };
 
 function ContributionsPage({ repositories }: Props) {
+  const { data: session } = useSession();
   const {
     newCourseModal: { onOpen },
   } = useContext(UIContext);
+
+  // TODO: add mutation
+  const { repositoriesQuery } = useUserRepositories({
+    user: session?.user._id,
+    initialData: repositories,
+  });
 
   const columns = useMemo<ColumnDef<IRepository>[]>(
     () => [
@@ -76,7 +84,7 @@ function ContributionsPage({ repositories }: Props) {
             icon={<BiTrash />}
             aria-label="opciones"
             colorScheme="red"
-            onClick={()=>handleDeleteRepository(info.row.original)}
+            onClick={() => handleDeleteRepository(info.row.original)}
           />
         ),
       },
@@ -86,7 +94,7 @@ function ContributionsPage({ repositories }: Props) {
 
   async function handleDeleteRepository(repo: IRepository) {
     try {
-      const {data} = await repositoryApi.delete(`/repositories/${repo._id}`);
+      const { data } = await repositoryApi.delete(`/repositories/${repo._id}`);
       console.log(data);
     } catch (error) {
       console.log(error);
