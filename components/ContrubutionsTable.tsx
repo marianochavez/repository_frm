@@ -23,19 +23,11 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-
-export type RepositoryColumn = {
-  url: string;
-  course: {
-    name: string;
-    plan: string;
-  };
-  createdAt: string;
-};
+import { IRepository } from "../types/repository";
 
 type Props = {
-  data: RepositoryColumn[];
-  columns: ColumnDef<RepositoryColumn>[];
+  data: IRepository[];
+  columns: ColumnDef<IRepository>[];
 };
 
 const ContrubutionsTable = ({ data, columns }: Props) => {
@@ -83,7 +75,7 @@ const ContrubutionsTable = ({ data, columns }: Props) => {
                 <Tr key={row.id}>
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <Td key={cell.id}>
+                      <Td key={cell.id} textAlign="center">
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
