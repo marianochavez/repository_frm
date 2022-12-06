@@ -37,6 +37,7 @@ function ContributionsPage({ repositories }: Props) {
       {
         header: "Link",
         accessorKey: "url",
+        enableSorting: false,
         footer: (props) => props.column.id,
         cell: (info) => (
           <Button
@@ -125,7 +126,8 @@ export const getServerSideProps: GetServerSideProps = async ({ req }) => {
     user: { _id },
   }: any = await getSession({ req });
 
-  const repositories = await dbRepositories.getRepositoriesByUser(_id);
+  const repositories: IRepository[] =
+    await dbRepositories.getRepositoriesByUser(_id);
 
   return {
     props: {

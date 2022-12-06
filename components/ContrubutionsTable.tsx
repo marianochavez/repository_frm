@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -22,6 +22,8 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   useReactTable,
+  SortingState,
+  getSortedRowModel,
 } from "@tanstack/react-table";
 import { IRepository } from "../types/repository";
 
@@ -31,14 +33,23 @@ type Props = {
 };
 
 const ContrubutionsTable = ({ data, columns }: Props) => {
+  const [sorting, setSorting] = useState<SortingState>([]);
+
   const table = useReactTable({
     data,
     columns,
+    state: {
+      sorting,
+    },
     // Pipeline
+    onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
+
+  console.log(sorting);
 
   return (
     <>
@@ -51,16 +62,32 @@ const ContrubutionsTable = ({ data, columns }: Props) => {
                   return (
                     <Th key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder ? null : (
-                        <Box fontSize="sm" textAlign="center">
+                        <Box
+                          fontSize="sm"
+                          textAlign="center"
+                          cursor={header.column.getCanSort() ? "pointer" : ""}
+                          userSelect={
+                            header.column.getCanSort() ? "none" : "auto"
+                          }
+                          onClick={header.column.getToggleSortingHandler()}
+                        >
                           {flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
+                          {/* SORT */}
+                          {{
+                            asc: " 🔼",
+                            desc: " 🔽",
+                          }[header.column.getIsSorted() as string] ?? null}
+                          {/* END SORT */}
+                          {/* FILTER */}
                           {header.column.getCanFilter() ? (
                             <Box>
                               <Filter column={header.column} table={table} />
                             </Box>
                           ) : null}
+                          {/* FILTER END */}
                         </Box>
                       )}
                     </Th>
