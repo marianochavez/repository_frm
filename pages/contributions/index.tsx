@@ -1,9 +1,10 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
-import { ColumnDef } from "@tanstack/react-table";
+import { useContext, useMemo } from "react";
 import { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import Link from "next/link";
-import { useContext, useMemo } from "react";
+import { Box, Button, Flex, Heading } from "@chakra-ui/react";
+import { ColumnDef } from "@tanstack/react-table";
+
 import ContrubutionsTable, {
   RepositoryColumn,
 } from "../../components/ContrubutionsTable";
@@ -79,14 +80,16 @@ function ContributionsPage({ repositories }: Props) {
   return (
     <PageLayout>
       <Flex flexDir="column">
-        <Box flex={1} textAlign="end">
-          <Button colorScheme="whatsapp" onClick={onOpen} mt={2} mr={2}>
-            Crear Repositorio
-          </Button>
-        </Box>
+        <Flex mt={2} mx={4} textAlign="center">
+          <Heading fontSize="3xl">Mis Aportes</Heading>
+          <Box flex={1} textAlign="end">
+            <Button colorScheme="whatsapp" onClick={onOpen}>
+              Crear Repositorio
+            </Button>
+          </Box>
+        </Flex>
 
         <ContrubutionsTable data={repositories} columns={columns} />
-
       </Flex>
       <NewCourseModal />
     </PageLayout>
