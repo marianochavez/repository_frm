@@ -8,7 +8,7 @@ export async function getAllDepartments() {
 
     await db.disconnect();
 
-    return departments;
+    return JSON.parse(JSON.stringify(departments));
 }
 
 export async function getDepartmentByName(name: string) {

@@ -16,11 +16,11 @@ export async function getRepositoriesByUser(userId: string) {
     if (!isValidObjectId(userId)) return;
 
     await db.connect();
-    const repositories = await Repository.find({ user: userId }).select("url course -_id").populate("course", "name plan -_id").lean();
+    const repositories = await Repository.find({ user: userId }).populate("course").lean();
 
     await db.disconnect();
 
-    return repositories;
+    return JSON.parse(JSON.stringify(repositories));
 }
 
 export async function getRepositoriesByCourse(courseId: string) {
