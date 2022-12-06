@@ -49,8 +49,6 @@ const ContrubutionsTable = ({ data, columns }: Props) => {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  console.log(sorting);
-
   return (
     <>
       <TableContainer px={10} py={5}>
@@ -128,40 +126,13 @@ type FilterProps = {
 };
 
 const Filter = ({ column, table }: FilterProps) => {
-  const firstValue = table
-    .getPreFilteredRowModel()
-    .flatRows[0]?.getValue(column.id);
+  // const firstValue = table
+  //   .getPreFilteredRowModel()
+  //   .flatRows[0]?.getValue(column.id);
 
   const columnFilterValue = column.getFilterValue();
 
-  return typeof firstValue === "number" ? (
-    <Flex gap={2}>
-      <Input
-        type="number"
-        value={(columnFilterValue as [number, number])?.[0] ?? ""}
-        onChange={(e) =>
-          column.setFilterValue((old: [number, number]) => [
-            e.target.value,
-            old?.[1],
-          ])
-        }
-        placeholder={`Min`}
-        w={24}
-      />
-      <Input
-        type="number"
-        value={(columnFilterValue as [number, number])?.[1] ?? ""}
-        onChange={(e) =>
-          column.setFilterValue((old: [number, number]) => [
-            old?.[0],
-            e.target.value,
-          ])
-        }
-        placeholder={`Max`}
-        w={24}
-      />
-    </Flex>
-  ) : (
+  return (
     <Input
       type="text"
       value={(columnFilterValue ?? "") as string}
@@ -171,7 +142,46 @@ const Filter = ({ column, table }: FilterProps) => {
       rounded="lg"
       mt={2}
     />
-  );
+  )
+
+  // return typeof firstValue === "number" ? (
+  //   <Flex gap={2}>
+  //     <Input
+  //       type="number"
+  //       value={(columnFilterValue as [number, number])?.[0] ?? ""}
+  //       onChange={(e) =>
+  //         column.setFilterValue((old: [number, number]) => [
+  //           e.target.value,
+  //           old?.[1],
+  //         ])
+  //       }
+  //       placeholder={`Min`}
+  //       w={24}
+  //     />
+  //     <Input
+  //       type="number"
+  //       value={(columnFilterValue as [number, number])?.[1] ?? ""}
+  //       onChange={(e) =>
+  //         column.setFilterValue((old: [number, number]) => [
+  //           old?.[0],
+  //           e.target.value,
+  //         ])
+  //       }
+  //       placeholder={`Max`}
+  //       w={24}
+  //     />
+  //   </Flex>
+  // ) : (
+  //   <Input
+  //     type="text"
+  //     value={(columnFilterValue ?? "") as string}
+  //     onChange={(e) => column.setFilterValue(e.target.value)}
+  //     placeholder={`Buscar...`}
+  //     size="sm"
+  //     rounded="lg"
+  //     mt={2}
+  //   />
+  // );
 };
 
 const Pagination = ({ table }: { table: ReactTable<any> }) => (

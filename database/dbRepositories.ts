@@ -96,11 +96,11 @@ export async function createRepository({ url, course, user }: CreateRepoProps) {
     return { _id, url, course, user };
 }
 
-export async function deleteRepository(id: string): Promise<{ deletedCount: number } | undefined> {
+export async function deleteRepository(id: string) {
     if (!isValidObjectId(id)) return;
 
     await db.connect();
-    const deletedCount = await Repository.deleteOne({ _id: id });
+    const deletedCount = await Repository.findOneAndDelete({ _id: id });
     await db.disconnect();
 
     return deletedCount;

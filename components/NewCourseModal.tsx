@@ -30,6 +30,7 @@ import { isUrl } from "../utils/validations";
 
 const NewCourseModal = () => {
   // TODO: refactor
+  // TODO: ADD MUTATION
   const {
     newCourseModal: { isOpen, onClose },
   } = useContext(UIContext);

@@ -36,9 +36,9 @@ async function deleteRepository(req: NextApiRequest, res: NextApiResponse<Data |
 
     const deletedRepository = await dbRepositories.deleteRepository(id);
 
-    if (deletedRepository?.deletedCount === 0) {
+    if (!deletedRepository) {
         return res.status(400).json({ message: `El repositorio ${id} no se pudo eliminar` });
     }
 
-    return res.status(200).json({ message: "Repositorio eliminado" })
+    return res.status(200).json({ data: deletedRepository })
 }

@@ -2,7 +2,15 @@ import { useContext, useMemo } from "react";
 import { GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
-import { Box, Button, Flex, Heading, IconButton } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  IconButton,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
 import { BiTrash } from "react-icons/bi";
 
@@ -15,21 +23,57 @@ import { getCleanDomain } from "../../utils/url";
 import { IRepository } from "../../types/repository";
 import repositoryApi from "../../api/repositoryApi";
 import useUserRepositories from "../../hooks/useUserRepositories";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 type Props = {
   repositories: IRepository[];
 };
 
 function ContributionsPage({ repositories }: Props) {
+  const toast = useToast();
+  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const {
     newCourseModal: { onOpen },
   } = useContext(UIContext);
 
-  // TODO: add mutation
   const { repositoriesQuery } = useUserRepositories({
     user: session?.user._id,
     initialData: repositories,
+  });
+
+  // TODO: REFACTOR - ADD CONFIRMATION for delete
+  const deleteMutation = useMutation({
+    mutationFn: async (repo: IRepository) => {
+      const { data } = await repositoryApi.delete(`/repositories/${repo._id}`);
+
+      return data;
+    },
+    onSuccess: (data: { data: IRepository }) =>
+      queryClient.setQueryData(
+        ["repositories", { user: session!.user._id }],
+        (oldData: IRepository[] | undefined) => {
+          return oldData!.filter(
+            (repo: IRepository) => repo._id !== data.data._id
+          );
+        }
+      ),
+    onMutate: () => {
+      toast({
+        title: "Repositorio eliminado",
+        status: "info",
+        duration: 5000,
+        position: "top-right",
+      });
+    },
+    onError: () =>
+      toast({
+        title: "Error",
+        description: "No se pudo eliminar el repositorio",
+        status: "error",
+        duration: 5000,
+        position: "top-right",
+      }),
   });
 
   const columns = useMemo<ColumnDef<IRepository>[]>(
@@ -85,22 +129,13 @@ function ContributionsPage({ repositories }: Props) {
             icon={<BiTrash />}
             aria-label="opciones"
             colorScheme="red"
-            onClick={() => handleDeleteRepository(info.row.original)}
+            onClick={() => deleteMutation.mutateAsync(info.row.original)}
           />
         ),
       },
     ],
-    []
+    [deleteMutation]
   );
-
-  async function handleDeleteRepository(repo: IRepository) {
-    try {
-      const { data } = await repositoryApi.delete(`/repositories/${repo._id}`);
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-  }
 
   return (
     <PageLayout>
@@ -114,7 +149,7 @@ function ContributionsPage({ repositories }: Props) {
           </Box>
         </Flex>
 
-        <ContrubutionsTable data={repositories} columns={columns} />
+        <ContrubutionsTable data={repositoriesQuery.data!} columns={columns} />
       </Flex>
       <NewCourseModal />
     </PageLayout>
