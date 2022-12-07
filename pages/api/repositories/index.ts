@@ -63,11 +63,11 @@ async function createRepository(req: NextApiRequest, res: NextApiResponse<Data |
 
     const user = session.user._id;
 
-    const repository = await dbRepositories.createRepository({ url, course, user });
+    const repository: any = await dbRepositories.createRepository({ url, course, user });
 
     if (repository.message) {
         return res.status(400).json({ message: repository.message });
     }
 
-    return res.status(200).json({ data: { _id: repository._id, url: repository.url!, user, course: courseDb } });
+    return res.status(200).json({ data: { ...repository, course: courseDb } });
 }

@@ -142,7 +142,7 @@ const Filter = ({ column, table }: FilterProps) => {
       rounded="lg"
       mt={2}
     />
-  )
+  );
 
   // return typeof firstValue === "number" ? (
   //   <Flex gap={2}>

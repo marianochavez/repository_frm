@@ -27,10 +27,12 @@ import { useDepartments } from "../hooks/useDepartments";
 import { IDeparment } from "../types/department";
 import { ICourse } from "../types/course";
 import { isUrl } from "../utils/validations";
+import { UseMutationResult } from "@tanstack/react-query";
+import { IRepository } from "../types/repository";
+
 
 const NewCourseModal = () => {
   // TODO: refactor
-  // TODO: ADD MUTATION
   const {
     newCourseModal: { isOpen, onClose },
   } = useContext(UIContext);
@@ -43,7 +45,7 @@ const NewCourseModal = () => {
     handleSubmitForm,
     success,
     reset,
-    formState: { errors, isSubmitting, isSubmitSuccessful },
+    formState: { errors, isSubmitting },
   } = useRepositoryForm({
     course: selectedCourse?._id!,
   });

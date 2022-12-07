@@ -1,4 +1,4 @@
-import { useContext, useMemo } from "react";
+import { useContext, useEffect, useMemo } from "react";
 import { GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -24,17 +24,17 @@ import { IRepository } from "../../types/repository";
 import repositoryApi from "../../api/repositoryApi";
 import useUserRepositories from "../../hooks/useUserRepositories";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import useDeleteRepositoryMutation from "../../hooks/useDeleteRepositoryMutation";
+import useCreateRepositoryMutation from "../../hooks/useCreateRepositoryMutation";
 
 type Props = {
   repositories: IRepository[];
 };
 
 function ContributionsPage({ repositories }: Props) {
-  const toast = useToast();
-  const queryClient = useQueryClient();
   const { data: session } = useSession();
   const {
-    newCourseModal: { onOpen },
+    newCourseModal: { onOpen, isOpen },
   } = useContext(UIContext);
 
   const { repositoriesQuery } = useUserRepositories({
@@ -42,39 +42,7 @@ function ContributionsPage({ repositories }: Props) {
     initialData: repositories,
   });
 
-  // TODO: REFACTOR - ADD CONFIRMATION for delete
-  const deleteMutation = useMutation({
-    mutationFn: async (repo: IRepository) => {
-      const { data } = await repositoryApi.delete(`/repositories/${repo._id}`);
-
-      return data;
-    },
-    onSuccess: (data: { data: IRepository }) =>
-      queryClient.setQueryData(
-        ["repositories", { user: session!.user._id }],
-        (oldData: IRepository[] | undefined) => {
-          return oldData!.filter(
-            (repo: IRepository) => repo._id !== data.data._id
-          );
-        }
-      ),
-    onMutate: () => {
-      toast({
-        title: "Repositorio eliminado",
-        status: "info",
-        duration: 5000,
-        position: "top-right",
-      });
-    },
-    onError: () =>
-      toast({
-        title: "Error",
-        description: "No se pudo eliminar el repositorio",
-        status: "error",
-        duration: 5000,
-        position: "top-right",
-      }),
-  });
+  const { deleteMutation } = useDeleteRepositoryMutation();
 
   const columns = useMemo<ColumnDef<IRepository>[]>(
     () => [
@@ -149,7 +117,13 @@ function ContributionsPage({ repositories }: Props) {
           </Box>
         </Flex>
 
-        <ContrubutionsTable data={repositoriesQuery.data!} columns={columns} />
+        {/* Only for re-render table when repository is created */}
+        {!isOpen && (
+          <ContrubutionsTable
+            data={repositoriesQuery.data!}
+            columns={columns}
+          />
+        )}
       </Flex>
       <NewCourseModal />
     </PageLayout>

@@ -16,7 +16,7 @@ export async function getRepositoriesByUser(userId: string) {
     if (!isValidObjectId(userId)) return;
 
     await db.connect();
-    const repositories = await Repository.find({ user: userId }).populate("course").lean();
+    const repositories = await Repository.find({ user: userId }).select("-__v").populate("course").lean();
 
     await db.disconnect();
 
@@ -82,18 +82,16 @@ export async function createRepository({ url, course, user }: CreateRepoProps) {
         return { message: "Ya existe un repositorio con ese url" };
     }
 
-    const newRepository = new Repository({
+    const newRepository = await Repository.create({
         url,
         course,
         user
-    })
-
-    await newRepository.save();
+    });
     await db.disconnect();
 
-    const { _id } = newRepository;
+    const { _id, createdAt, updatedAt, } = newRepository;
 
-    return { _id, url, course, user };
+    return { _id, url, user, createdAt, updatedAt };
 }
 
 export async function deleteRepository(id: string) {
