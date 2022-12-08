@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+
 import repositoryApi from "../api/repositoryApi";
 import { ICourse } from "../types/course";
-
 import { IDeparment } from "../types/department";
 
 interface GetCoursesProps extends Props {}

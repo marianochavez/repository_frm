@@ -1,7 +1,7 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
-import { GetServerSideProps } from "next";
 import { useState } from "react";
-import repositoryApi from "../../api/repositoryApi";
+import { GetServerSideProps } from "next";
+import { Box, Button, Flex } from "@chakra-ui/react";
+
 import CourseList from "../../components/CourseList";
 import PageLayout from "../../components/layouts/PageLayout";
 import { dbDepartments } from "../../database";

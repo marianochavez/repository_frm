@@ -1,7 +1,8 @@
+import type { ColumnDef } from "@tanstack/react-table";
+
 import {
   MutableRefObject,
   useContext,
-  useEffect,
   useMemo,
   useRef,
 } from "react";
@@ -14,11 +15,8 @@ import {
   Flex,
   Heading,
   IconButton,
-  Text,
   useDisclosure,
-  useToast,
 } from "@chakra-ui/react";
-import { CellContext, ColumnDef } from "@tanstack/react-table";
 import { BiTrash } from "react-icons/bi";
 
 import ContrubutionsTable from "../../components/ContrubutionsTable";
@@ -28,11 +26,8 @@ import { UIContext } from "../../context/ui/UIContext";
 import { dbRepositories } from "../../database";
 import { getCleanDomain } from "../../utils/url";
 import { IRepository } from "../../types/repository";
-import repositoryApi from "../../api/repositoryApi";
 import useUserRepositories from "../../hooks/useUserRepositories";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useDeleteRepositoryMutation from "../../hooks/useDeleteRepositoryMutation";
-import useCreateRepositoryMutation from "../../hooks/useCreateRepositoryMutation";
 import AlertDialogConfirmation from "../../components/ui/AlertDialogConfirmation";
 
 type Props = {
@@ -147,14 +142,14 @@ function ContributionsPage({ repositories }: Props) {
           />
         )}
       </Flex>
-        <AlertDialogConfirmation
-          header="Eliminar Repositorio"
-          body="Está seguro que quiere eliminar el repositorio?"
-          button={{ title: "Eliminar", colorSchema: "red" }}
-          isOpen={isOpenAlert}
-          onClose={onCloseAlert}
-          onConfirm={handleDeleteRepository}
-        />
+      <AlertDialogConfirmation
+        header="Eliminar Repositorio"
+        body="Está seguro que quiere eliminar el repositorio?"
+        button={{ title: "Eliminar", colorSchema: "red" }}
+        isOpen={isOpenAlert}
+        onClose={onCloseAlert}
+        onConfirm={handleDeleteRepository}
+      />
       <NewCourseModal />
     </PageLayout>
   );

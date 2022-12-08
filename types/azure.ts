@@ -1,3 +1,4 @@
+// TODO: delete this
 export type MsalConfig = {
     auth: {
         clientId: string;

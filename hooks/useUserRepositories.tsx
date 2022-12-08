@@ -1,7 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+
 import repositoryApi from "../api/repositoryApi";
-import { ICourse } from "../types/course";
 import { IRepository } from "../types/repository";
 import { IUser } from "../types/user";
 

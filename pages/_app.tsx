@@ -16,6 +16,7 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps) {
+  // TODO: delete msal lib
   const msalInstance = new PublicClientApplication(msalConfig);
   const queryClient = new QueryClient();
 

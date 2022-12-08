@@ -7,6 +7,7 @@ interface Props {
 }
 
 export const AuthProvider: React.FC<Props> = ({ children }) => {
+  // TODO: check what other components use this session
   const {data:session, status} = useSession();
   const isAuthenticated = !!(status === "authenticated");
 

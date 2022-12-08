@@ -25,6 +25,7 @@ import {
   SortingState,
   getSortedRowModel,
 } from "@tanstack/react-table";
+
 import { IRepository } from "../types/repository";
 
 type Props = {

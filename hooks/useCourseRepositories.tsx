@@ -1,7 +1,7 @@
-import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+
 import repositoryApi from "../api/repositoryApi";
-import { ICourse } from "../types/course";
 import { IRepository } from "../types/repository";
 
 interface GetRepositoriesProps extends Props {

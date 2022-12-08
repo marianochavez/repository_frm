@@ -27,12 +27,9 @@ import { useDepartments } from "../hooks/useDepartments";
 import { IDeparment } from "../types/department";
 import { ICourse } from "../types/course";
 import { isUrl } from "../utils/validations";
-import { UseMutationResult } from "@tanstack/react-query";
-import { IRepository } from "../types/repository";
 
 
 const NewCourseModal = () => {
-  // TODO: refactor
   const {
     newCourseModal: { isOpen, onClose },
   } = useContext(UIContext);

@@ -1,4 +1,4 @@
-import { RefObject, useRef } from "react";
+import { useRef } from "react";
 import {
   AlertDialog,
   AlertDialogBody,

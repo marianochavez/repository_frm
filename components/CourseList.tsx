@@ -1,4 +1,5 @@
 import { Box, Flex } from "@chakra-ui/react";
+
 import { ICourse } from "../types/course";
 import CourseItem from "./CourseItem";
 
