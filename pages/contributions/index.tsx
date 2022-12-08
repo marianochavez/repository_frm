@@ -1,4 +1,10 @@
-import { useContext, useEffect, useMemo } from "react";
+import {
+  MutableRefObject,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+} from "react";
 import { GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Link from "next/link";
@@ -9,9 +15,10 @@ import {
   Heading,
   IconButton,
   Text,
+  useDisclosure,
   useToast,
 } from "@chakra-ui/react";
-import { ColumnDef } from "@tanstack/react-table";
+import { CellContext, ColumnDef } from "@tanstack/react-table";
 import { BiTrash } from "react-icons/bi";
 
 import ContrubutionsTable from "../../components/ContrubutionsTable";
@@ -26,12 +33,15 @@ import useUserRepositories from "../../hooks/useUserRepositories";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import useDeleteRepositoryMutation from "../../hooks/useDeleteRepositoryMutation";
 import useCreateRepositoryMutation from "../../hooks/useCreateRepositoryMutation";
+import AlertDialogConfirmation from "../../components/ui/AlertDialogConfirmation";
 
 type Props = {
   repositories: IRepository[];
 };
 
 function ContributionsPage({ repositories }: Props) {
+  const repositoryToDelete: MutableRefObject<IRepository | undefined> =
+    useRef();
   const { data: session } = useSession();
   const {
     newCourseModal: { onOpen, isOpen },
@@ -43,6 +53,15 @@ function ContributionsPage({ repositories }: Props) {
   });
 
   const { deleteMutation } = useDeleteRepositoryMutation();
+  const {
+    isOpen: isOpenAlert,
+    onClose: onCloseAlert,
+    onOpen: onOpenAlert,
+  } = useDisclosure();
+
+  const handleDeleteRepository = () => {
+    deleteMutation.mutateAsync(repositoryToDelete.current!);
+  };
 
   const columns = useMemo<ColumnDef<IRepository>[]>(
     () => [
@@ -97,12 +116,15 @@ function ContributionsPage({ repositories }: Props) {
             icon={<BiTrash />}
             aria-label="opciones"
             colorScheme="red"
-            onClick={() => deleteMutation.mutateAsync(info.row.original)}
+            onClick={() => {
+              repositoryToDelete.current = info.row.original;
+              onOpenAlert();
+            }}
           />
         ),
       },
     ],
-    [deleteMutation]
+    [onOpenAlert]
   );
 
   return (
@@ -125,6 +147,14 @@ function ContributionsPage({ repositories }: Props) {
           />
         )}
       </Flex>
+        <AlertDialogConfirmation
+          header="Eliminar Repositorio"
+          body="Está seguro que quiere eliminar el repositorio?"
+          button={{ title: "Eliminar", colorSchema: "red" }}
+          isOpen={isOpenAlert}
+          onClose={onCloseAlert}
+          onConfirm={handleDeleteRepository}
+        />
       <NewCourseModal />
     </PageLayout>
   );

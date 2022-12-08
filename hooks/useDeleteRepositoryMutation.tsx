@@ -5,7 +5,6 @@ import repositoryApi from "../api/repositoryApi";
 import { IRepository } from "../types/repository";
 
 const useDeleteRepositoryMutation = () => {
-  // TODO: add delete confirmation
   const { data: session } = useSession();
   const queryClient = useQueryClient();
   const toast = useToast();
