@@ -1,13 +1,8 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
-import {
-  MutableRefObject,
-  useContext,
-  useMemo,
-  useRef,
-} from "react";
+import { MutableRefObject, useContext, useMemo, useRef } from "react";
 import { GetServerSideProps } from "next";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import Link from "next/link";
 import {
   Box,
@@ -29,25 +24,25 @@ import { IRepository } from "../../types/repository";
 import useUserRepositories from "../../hooks/useUserRepositories";
 import useDeleteRepositoryMutation from "../../hooks/useDeleteRepositoryMutation";
 import AlertDialogConfirmation from "../../components/ui/AlertDialogConfirmation";
+import { AuthContext } from "../../context/auth/AuthContext";
 
 type Props = {
   repositories: IRepository[];
 };
 
 function ContributionsPage({ repositories }: Props) {
-  const repositoryToDelete: MutableRefObject<IRepository | undefined> =
-    useRef();
-  const { data: session } = useSession();
+  const { session } = useContext(AuthContext);
   const {
     newCourseModal: { onOpen, isOpen },
   } = useContext(UIContext);
-
   const { repositoriesQuery } = useUserRepositories({
     user: session?.user._id,
     initialData: repositories,
   });
-
   const { deleteMutation } = useDeleteRepositoryMutation();
+  const repositoryToDelete: MutableRefObject<IRepository | undefined> =
+    useRef();
+
   const {
     isOpen: isOpenAlert,
     onClose: onCloseAlert,
@@ -135,12 +130,7 @@ function ContributionsPage({ repositories }: Props) {
         </Flex>
 
         {/* Only for re-render table when repository is created */}
-        {!isOpen && (
-          <ContrubutionsTable
-            data={repositoriesQuery.data!}
-            columns={columns}
-          />
-        )}
+        <ContrubutionsTable data={Array.from(repositoriesQuery.data!)} columns={columns} />
       </Flex>
       <AlertDialogConfirmation
         header="Eliminar Repositorio"
@@ -156,6 +146,7 @@ function ContributionsPage({ repositories }: Props) {
 }
 
 export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+  // TODO: change to client
   const {
     user: { _id },
   }: any = await getSession({ req });

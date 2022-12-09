@@ -48,6 +48,8 @@ const ContrubutionsTable = ({ data, columns }: Props) => {
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    // Development
+    debugTable: true,
   });
 
   return (
@@ -61,25 +63,25 @@ const ContrubutionsTable = ({ data, columns }: Props) => {
                   return (
                     <Th key={header.id} colSpan={header.colSpan}>
                       {header.isPlaceholder ? null : (
-                        <Box
-                          fontSize="sm"
-                          textAlign="center"
-                          cursor={header.column.getCanSort() ? "pointer" : ""}
-                          userSelect={
-                            header.column.getCanSort() ? "none" : "auto"
-                          }
-                          onClick={header.column.getToggleSortingHandler()}
-                        >
-                          {flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                          {/* SORT */}
-                          {{
-                            asc: " 🔼",
-                            desc: " 🔽",
-                          }[header.column.getIsSorted() as string] ?? null}
-                          {/* END SORT */}
+                        <Box fontSize="sm" textAlign="center">
+                          <Box
+                            onClick={header.column.getToggleSortingHandler()}
+                            cursor={header.column.getCanSort() ? "pointer" : ""}
+                            userSelect={
+                              header.column.getCanSort() ? "none" : "auto"
+                            }
+                          >
+                            {flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                            {/* SORT */}
+                            {{
+                              asc: " 🔼",
+                              desc: " 🔽",
+                            }[header.column.getIsSorted() as string] ?? null}
+                            {/* END SORT */}
+                          </Box>
                           {/* FILTER */}
                           {header.column.getCanFilter() ? (
                             <Box>
