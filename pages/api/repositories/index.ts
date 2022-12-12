@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 }
 
 async function getRepositories(req: NextApiRequest, res: NextApiResponse<Data | DataError>) {
-    const { course = "", user = "" } = req.query as { course: string; user: string; };
+    const { course, user } = req.query as { course: string; user: string; };
     let repositories: any;
 
     if (user && course) {

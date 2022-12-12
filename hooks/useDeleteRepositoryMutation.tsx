@@ -1,12 +1,13 @@
-import { useSession } from "next-auth/react";
+import { useContext } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
 
 import repositoryApi from "../api/repositoryApi";
 import { IRepository } from "../types/repository";
+import { AuthContext } from "../context/auth/AuthContext";
 
 const useDeleteRepositoryMutation = () => {
-  const { data: session } = useSession();
+  const { session } = useContext(AuthContext);
   const queryClient = useQueryClient();
   const toast = useToast();
   const deleteMutation = useMutation({

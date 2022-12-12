@@ -32,6 +32,7 @@ const useUserRepositories = ({ user, initialData }: Props) => {
       initialData,
       staleTime: 1000 * 3,
       refetchOnWindowFocus: false,
+      enabled: !!user,
     }
   );
 

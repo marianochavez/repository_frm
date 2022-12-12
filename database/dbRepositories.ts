@@ -35,10 +35,10 @@ export async function getRepositoriesByCourse(courseId: string) {
 }
 
 export async function getRepositoriesByUserAndCourse({ userId, courseId }: { userId: string; courseId: string; }) {
-    if (!isValidObjectId(courseId)) return;
+    if (!isValidObjectId(courseId) || !isValidObjectId(userId)) return;
 
     await db.connect();
-    const repositories = await Repository.find({ user: userId, course: courseId });
+    const repositories = await Repository.find({ user: userId, course: courseId }).populate("course");
 
     await db.disconnect();
 
@@ -48,14 +48,14 @@ export async function getRepositoriesByUserAndCourse({ userId, courseId }: { use
 export async function getRepositoriesByUserOrCourse({ userId, courseId }: { userId: string; courseId: string; }) {
     if (isValidObjectId(userId)) {
         await db.connect();
-        const repositories = await Repository.find({ user: userId });
+        const repositories = await Repository.find({ user: userId }).populate("course");
 
         await db.disconnect();
 
         return repositories;
     } else if (isValidObjectId(courseId)) {
         await db.connect();
-        const repositories = await Repository.find({ course: courseId });
+        const repositories = await Repository.find({ course: courseId }).populate("course");
 
         await db.disconnect();
 

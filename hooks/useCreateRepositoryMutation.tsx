@@ -1,13 +1,14 @@
-import { useSession } from "next-auth/react";
+import { useContext } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
 
 import repositoryApi from "../api/repositoryApi";
 import { IRepository } from "../types/repository";
+import { AuthContext } from "../context/auth/AuthContext";
 
 const useCreateRepositoryMutation = () => {
   const toast = useToast();
-  const { data: session } = useSession();
+  const { session } = useContext(AuthContext);
   const queryClient = useQueryClient();
   const createMutation = useMutation({
     mutationFn: async ({ url, course }: { url: string; course: string }) => {

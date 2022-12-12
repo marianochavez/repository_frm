@@ -1,12 +1,11 @@
 import type { ColumnDef } from "@tanstack/react-table";
 
 import { MutableRefObject, useContext, useMemo, useRef } from "react";
-import { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
 import Link from "next/link";
 import {
   Box,
   Button,
+  Center,
   Flex,
   Heading,
   IconButton,
@@ -18,30 +17,22 @@ import ContrubutionsTable from "../../components/ContrubutionsTable";
 import PageLayout from "../../components/layouts/PageLayout";
 import NewCourseModal from "../../components/NewCourseModal";
 import { UIContext } from "../../context/ui/UIContext";
-import { dbRepositories } from "../../database";
 import { getCleanDomain } from "../../utils/url";
 import { IRepository } from "../../types/repository";
 import useUserRepositories from "../../hooks/useUserRepositories";
 import useDeleteRepositoryMutation from "../../hooks/useDeleteRepositoryMutation";
 import AlertDialogConfirmation from "../../components/ui/AlertDialogConfirmation";
 import { AuthContext } from "../../context/auth/AuthContext";
+import Loading from "../../components/ui/Loading";
 
-type Props = {
-  repositories: IRepository[];
-};
-
-function ContributionsPage({ repositories }: Props) {
+function ContributionsPage() {
   const { session } = useContext(AuthContext);
-  const {
-    newCourseModal: { onOpen, isOpen },
-  } = useContext(UIContext);
-  const { repositoriesQuery } = useUserRepositories({
-    user: session?.user._id,
-    initialData: repositories,
-  });
+  const { newCourseModal: { onOpen }} = useContext(UIContext);
+  const repositoryToDelete: MutableRefObject<IRepository | undefined> = useRef();
+
+  const { repositoriesQuery } = useUserRepositories({ user: session?.user._id });
+
   const { deleteMutation } = useDeleteRepositoryMutation();
-  const repositoryToDelete: MutableRefObject<IRepository | undefined> =
-    useRef();
 
   const {
     isOpen: isOpenAlert,
@@ -129,8 +120,16 @@ function ContributionsPage({ repositories }: Props) {
           </Box>
         </Flex>
 
-        {/* Only for re-render table when repository is created */}
-        <ContrubutionsTable data={Array.from(repositoriesQuery.data!)} columns={columns} />
+        {repositoriesQuery.isLoading ? (
+          <Center mt={20}>
+            <Loading />
+          </Center>
+        ) : (
+          <ContrubutionsTable
+            data={Array.from(repositoriesQuery.data || [])}
+            columns={columns}
+          />
+        )}
       </Flex>
       <AlertDialogConfirmation
         header="Eliminar Repositorio"
@@ -144,21 +143,5 @@ function ContributionsPage({ repositories }: Props) {
     </PageLayout>
   );
 }
-
-export const getServerSideProps: GetServerSideProps = async ({ req }) => {
-  // TODO: change to client
-  const {
-    user: { _id },
-  }: any = await getSession({ req });
-
-  const repositories: IRepository[] =
-    await dbRepositories.getRepositoriesByUser(_id);
-
-  return {
-    props: {
-      repositories,
-    },
-  };
-};
 
 export default ContributionsPage;
