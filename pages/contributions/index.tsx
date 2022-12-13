@@ -1,4 +1,4 @@
-import type { ColumnDef } from "@tanstack/react-table";
+import type { ColumnDef, Row } from "@tanstack/react-table";
 
 import { MutableRefObject, useContext, useMemo, useRef } from "react";
 import Link from "next/link";
@@ -27,7 +27,9 @@ import Loading from "../../components/ui/Loading";
 
 function ContributionsPage() {
   const { session } = useContext(AuthContext);
-  const { newCourseModal: { onOpen }} = useContext(UIContext);
+
+  const { newCourseModal: { onOpen } } = useContext(UIContext);
+
   const repositoryToDelete: MutableRefObject<IRepository | undefined> = useRef();
 
   const { repositoriesQuery } = useUserRepositories({ user: session?.user._id });
@@ -89,23 +91,8 @@ function ContributionsPage() {
             minute: "numeric",
           }),
       },
-      {
-        header: "Eliminar",
-        cell: (info) => (
-          <IconButton
-            variant="ghost"
-            icon={<BiTrash />}
-            aria-label="opciones"
-            colorScheme="red"
-            onClick={() => {
-              repositoryToDelete.current = info.row.original;
-              onOpenAlert();
-            }}
-          />
-        ),
-      },
     ],
-    [onOpenAlert]
+    []
   );
 
   return (
@@ -128,6 +115,10 @@ function ContributionsPage() {
           <ContrubutionsTable
             data={Array.from(repositoriesQuery.data || [])}
             columns={columns}
+            onDeleteRow={(repository) => {
+              repositoryToDelete.current = repository;
+              onOpenAlert();
+            }}
           />
         )}
       </Flex>

@@ -1,4 +1,3 @@
-import { AccountInfo } from "@azure/msal-browser";
 import { Session } from "next-auth";
 import { createContext } from "react";
 

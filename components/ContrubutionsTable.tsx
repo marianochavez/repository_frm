@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { MutableRefObject, useState } from "react";
 import {
   Box,
   Button,
   Flex,
+  IconButton,
   Input,
   Table,
   TableContainer,
@@ -27,13 +28,15 @@ import {
 } from "@tanstack/react-table";
 
 import { IRepository } from "../types/repository";
+import { BiTrash } from "react-icons/bi";
 
 type Props = {
   data: IRepository[];
   columns: ColumnDef<IRepository>[];
+  onDeleteRow: (repository: IRepository) => void;
 };
 
-const ContrubutionsTable = ({ data, columns }: Props) => {
+const ContrubutionsTable = ({ data, columns, onDeleteRow }: Props) => {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
@@ -111,6 +114,16 @@ const ContrubutionsTable = ({ data, columns }: Props) => {
                       </Td>
                     );
                   })}
+                  {/* Delete row column */}
+                  <Td>
+                    <IconButton
+                      variant="ghost"
+                      icon={<BiTrash />}
+                      aria-label="opciones"
+                      colorScheme="red"
+                      onClick={() => onDeleteRow(row.original)}
+                    />
+                  </Td>
                 </Tr>
               );
             })}
@@ -128,11 +141,7 @@ type FilterProps = {
   table: ReactTable<any>;
 };
 
-const Filter = ({ column, table }: FilterProps) => {
-  // const firstValue = table
-  //   .getPreFilteredRowModel()
-  //   .flatRows[0]?.getValue(column.id);
-
+const Filter = ({ column }: FilterProps) => {
   const columnFilterValue = column.getFilterValue();
 
   return (
@@ -146,45 +155,6 @@ const Filter = ({ column, table }: FilterProps) => {
       mt={2}
     />
   );
-
-  // return typeof firstValue === "number" ? (
-  //   <Flex gap={2}>
-  //     <Input
-  //       type="number"
-  //       value={(columnFilterValue as [number, number])?.[0] ?? ""}
-  //       onChange={(e) =>
-  //         column.setFilterValue((old: [number, number]) => [
-  //           e.target.value,
-  //           old?.[1],
-  //         ])
-  //       }
-  //       placeholder={`Min`}
-  //       w={24}
-  //     />
-  //     <Input
-  //       type="number"
-  //       value={(columnFilterValue as [number, number])?.[1] ?? ""}
-  //       onChange={(e) =>
-  //         column.setFilterValue((old: [number, number]) => [
-  //           old?.[0],
-  //           e.target.value,
-  //         ])
-  //       }
-  //       placeholder={`Max`}
-  //       w={24}
-  //     />
-  //   </Flex>
-  // ) : (
-  //   <Input
-  //     type="text"
-  //     value={(columnFilterValue ?? "") as string}
-  //     onChange={(e) => column.setFilterValue(e.target.value)}
-  //     placeholder={`Buscar...`}
-  //     size="sm"
-  //     rounded="lg"
-  //     mt={2}
-  //   />
-  // );
 };
 
 const Pagination = ({ table }: { table: ReactTable<any> }) => (
