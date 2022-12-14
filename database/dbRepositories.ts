@@ -1,6 +1,8 @@
 import { isValidObjectId } from "mongoose";
 import { db } from ".";
 import Repository from "../models/Repository";
+import { ICourse } from "../types/course";
+import { IUser } from "../types/user";
 import { IRepository } from "../types/repository";
 
 export async function getAllRepositories() {
@@ -45,17 +47,29 @@ export async function getRepositoriesByUserAndCourse({ userId, courseId }: { use
     return repositories;
 }
 
-export async function getRepositoriesByUserOrCourse({ userId, courseId }: { userId: string; courseId: string; }) {
+type getRepositoriesByUserOrCourseProps = {
+    userId: IUser["_id"];
+    courseId: ICourse["_id"];
+    populateUser?: boolean;
+    populateCourse?: boolean;
+}
+
+export async function getRepositoriesByUserOrCourse({ userId, courseId, populateUser = false, populateCourse = false }: getRepositoriesByUserOrCourseProps) {
+    // TODO: refactor
     if (isValidObjectId(userId)) {
         await db.connect();
-        const repositories = await Repository.find({ user: userId }).populate("course");
+        const repositories = await Repository.find({ user: userId })
+            .populate({ path: "user", match: populateUser })
+            .populate({ path: "course", match: populateCourse });
 
         await db.disconnect();
 
         return repositories;
     } else if (isValidObjectId(courseId)) {
         await db.connect();
-        const repositories = await Repository.find({ course: courseId }).populate("course");
+        const repositories = await Repository.find({ course: courseId })
+            .populate({ path: "user", match: populateUser })
+            .populate({ path: "course", match: populateCourse });
 
         await db.disconnect();
 

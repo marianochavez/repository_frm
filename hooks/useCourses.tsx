@@ -28,6 +28,7 @@ export const useCourses = ({ department }: Props) => {
     () => getCourses({ department }),
     {
       enabled: !!department,
+      staleTime: Infinity,
     }
   );
 

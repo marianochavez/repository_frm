@@ -1,10 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react';
 
-import { dbCourses, dbRepositories } from '../../../database';
-import { ICourse } from '../../../types/course';
+import { dbRepositories } from '../../../database';
 import { IRepository } from '../../../types/repository';
-import { IUser } from '../../../types/user';
 
 type Data = {
     data: IRepository[] | IRepository;

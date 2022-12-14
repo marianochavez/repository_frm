@@ -12,7 +12,9 @@ const getDepartments = async () => {
 };
 
 export const useDepartments = () => {
-  const departmentsQuery = useQuery(["departments"], () => getDepartments());
+  const departmentsQuery = useQuery(["departments"], () => getDepartments(), {
+    staleTime: Infinity,
+  });
 
   return {
     departmentsQuery,

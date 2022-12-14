@@ -1,6 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { db, dbDepartments } from '../../../database';
-import Department from '../../../models/Department';
+import { dbDepartments } from '../../../database';
 import { IDeparment } from '../../../types/department'
 
 type Data = {
@@ -14,19 +13,19 @@ type DataError = {
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data | DataError>) {
     switch (req.method) {
         case "GET":
-            return await getDepartments(req,res);
-    
+            return await getDepartments(req, res);
+
         default:
             res.status(400).end(`Method Not Allowed`);
     }
 }
 
-async function getDepartments(req: NextApiRequest, res: NextApiResponse<Data | DataError>){
+async function getDepartments(req: NextApiRequest, res: NextApiResponse<Data | DataError>) {
     const departments = await dbDepartments.getAllDepartments();
 
-    if(!departments) {
-        return res.status(400).json({message: "No se encontró ningún Departamento"});
+    if (!departments) {
+        return res.status(400).json({ message: "No se encontró ningún Departamento" });
     }
 
-    res.status(200).json({data: departments})
+    res.status(200).json({ data: departments })
 }

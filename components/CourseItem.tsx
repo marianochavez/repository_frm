@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Box } from "@chakra-ui/react";
+import { Box, Button } from "@chakra-ui/react";
 
 import { ICourse } from "../types/course";
 
@@ -9,9 +9,17 @@ type Props = {
 
 const CourseItem = ({ course }: Props) => {
   return (
-    <Box bg="orange.100" p={2} rounded="md">
-      <Link href={`/resources/${course._id}`}>{course.name}</Link>
-    </Box>
+    <Button
+      as={Link}
+      href={`/resources/${course._id}`}
+      colorScheme="orange"
+      bg="orange.300"
+      p={2}
+      rounded="md"
+      color="black"
+    >
+      {course.name}
+    </Button>
   );
 };
 

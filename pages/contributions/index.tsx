@@ -1,4 +1,4 @@
-import type { ColumnDef, Row } from "@tanstack/react-table";
+import type { ColumnDef } from "@tanstack/react-table";
 
 import { MutableRefObject, useContext, useMemo, useRef } from "react";
 import Link from "next/link";
@@ -8,12 +8,10 @@ import {
   Center,
   Flex,
   Heading,
-  IconButton,
   useDisclosure,
 } from "@chakra-ui/react";
-import { BiTrash } from "react-icons/bi";
 
-import ContrubutionsTable from "../../components/ContrubutionsTable";
+import RepositoriesTable from "../../components/RepositoriesTable";
 import PageLayout from "../../components/layouts/PageLayout";
 import NewCourseModal from "../../components/NewCourseModal";
 import { UIContext } from "../../context/ui/UIContext";
@@ -79,7 +77,7 @@ function ContributionsPage() {
         footer: (props) => props.column.id,
       },
       {
-        header: "Creado",
+        header: "Creación",
         accessorKey: "createdAt",
         footer: (props) => props.column.id,
         cell: (info) =>
@@ -112,7 +110,7 @@ function ContributionsPage() {
             <Loading />
           </Center>
         ) : (
-          <ContrubutionsTable
+          <RepositoriesTable
             data={Array.from(repositoriesQuery.data || [])}
             columns={columns}
             onDeleteRow={(repository) => {

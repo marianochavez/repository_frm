@@ -33,10 +33,10 @@ import { BiTrash } from "react-icons/bi";
 type Props = {
   data: IRepository[];
   columns: ColumnDef<IRepository>[];
-  onDeleteRow: (repository: IRepository) => void;
+  onDeleteRow?: (repository: IRepository) => void;
 };
 
-const ContrubutionsTable = ({ data, columns, onDeleteRow }: Props) => {
+const RepositoriesTable = ({ data, columns, onDeleteRow }: Props) => {
   const [sorting, setSorting] = useState<SortingState>([]);
 
   const table = useReactTable({
@@ -115,15 +115,17 @@ const ContrubutionsTable = ({ data, columns, onDeleteRow }: Props) => {
                     );
                   })}
                   {/* Delete row column */}
-                  <Td>
-                    <IconButton
-                      variant="ghost"
-                      icon={<BiTrash />}
-                      aria-label="opciones"
-                      colorScheme="red"
-                      onClick={() => onDeleteRow(row.original)}
-                    />
-                  </Td>
+                  {onDeleteRow && (
+                    <Td>
+                      <IconButton
+                        variant="ghost"
+                        icon={<BiTrash />}
+                        aria-label="opciones"
+                        colorScheme="red"
+                        onClick={() => onDeleteRow(row.original)}
+                      />
+                    </Td>
+                  )}
                 </Tr>
               );
             })}
@@ -214,4 +216,4 @@ const Pagination = ({ table }: { table: ReactTable<any> }) => (
   </Flex>
 );
 
-export default ContrubutionsTable;
+export default RepositoriesTable;

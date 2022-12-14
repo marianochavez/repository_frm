@@ -29,6 +29,7 @@ type Props = {
 };
 
 const useCourseRepositories = ({ course }: Props) => {
+  // TODO: delete pagination
   const [page, setPage] = useState(1);
 
   useEffect(() => {

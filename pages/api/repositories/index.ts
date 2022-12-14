@@ -2,9 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import { getSession } from 'next-auth/react';
 
 import { dbCourses, dbRepositories } from '../../../database';
-import { ICourse } from '../../../types/course';
 import { IRepository } from '../../../types/repository';
-import { IUser } from '../../../types/user';
 
 type Data = {
     data: IRepository[] | IRepository;
@@ -30,11 +28,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 async function getRepositories(req: NextApiRequest, res: NextApiResponse<Data | DataError>) {
     const { course, user } = req.query as { course: string; user: string; };
     let repositories: any;
-
+    // TODO: refactor
     if (user && course) {
         repositories = await dbRepositories.getRepositoriesByUserAndCourse({ userId: user, courseId: course });
     } else if (user || course) {
-        repositories = await dbRepositories.getRepositoriesByUserOrCourse({ userId: user, courseId: course });
+        repositories = await dbRepositories.getRepositoriesByUserOrCourse({ userId: user, courseId: course, populateCourse: !!course, populateUser: !!user });
     } else {
         repositories = await dbRepositories.getAllRepositories();
     }

@@ -1,9 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { db, dbSeed } from '../../database'
-import Course from '../../models/Course';
+import ICourse from '../../models/Course';
 import Department from '../../models/Department';
-import Repository from '../../models/Repository';
-import User from '../../models/User';
+import IRepository from '../../models/Repository';
+import IUser from '../../models/User';
 
 type Data = {
     message: string

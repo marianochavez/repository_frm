@@ -9,7 +9,7 @@ type Props = {
 
 const CourseList = ({ courses }: Props) => {
   return (
-    <Flex flexDir="column" ml={10} p={2} gap={2}>
+    <Flex flexDir="column" mx={14} p={2} ml={20} gap={2}>
       {courses.map((course) => (
         <CourseItem key={course.name} course={course} />
       ))}
