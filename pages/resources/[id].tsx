@@ -1,8 +1,8 @@
 import { useMemo } from "react";
-import { useRouter } from "next/router";
+import { GetServerSideProps } from 'next'
 import Link from "next/link";
-import { Box, Button, Center, Heading, Tag, Text, Tooltip } from "@chakra-ui/react";
-import { CellContext, ColumnDef } from "@tanstack/react-table";
+import { Button, Center, Heading, Tag, Text, Tooltip } from "@chakra-ui/react";
+import { ColumnDef } from "@tanstack/react-table";
 
 import PageLayout from "../../components/layouts/PageLayout";
 import RepositoriesTable from "../../components/RepositoriesTable";
@@ -11,13 +11,16 @@ import useCourseRepositories from "../../hooks/useCourseRepositories";
 import { IRepository } from "../../types/repository";
 import { getCleanDomain } from "../../utils/url";
 import { IUser } from "../../types/user";
+import { dbCourses } from "../../database";
+import { ICourse } from "../../types/course";
 
+type Props = {
+  course: ICourse;
+}
 
-function CourseResourcePage() {
-  const router = useRouter();
-  const { id } = router.query as { id: string };
+function CourseResourcePage({course}:Props) {
   const { repositoriesQuery } = useCourseRepositories({
-    course: id,
+    course: course._id,
   });
 
   const columns = useMemo<ColumnDef<IRepository>[]>(
@@ -80,7 +83,7 @@ function CourseResourcePage() {
   return (
     <PageLayout>
       <Heading>
-        Recursos de 
+        Recursos de {course.name}
       </Heading>
       {repositoriesQuery.isLoading ? (
         <Center mt={20}>
@@ -98,6 +101,21 @@ function CourseResourcePage() {
   );
 }
 
-// TODO: SSP check query id and get course
+export const getServerSideProps: GetServerSideProps = async ({query}) => {
+  const { id } = query as {id: string};
+  const course = await dbCourses.getCourseById(id);
+
+  if(!course) {
+    return {
+      notFound: true
+    }
+  }
+
+  return {
+    props: {
+      course
+    }
+  }
+}
 
 export default CourseResourcePage;

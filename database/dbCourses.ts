@@ -25,5 +25,5 @@ export async function getCourseById(id: string) {
     const course = await Course.findOne({ _id: id }).lean();
     await db.connect();
 
-    return course;  
+    return JSON.parse(JSON.stringify(course));  
 }
