@@ -22,15 +22,21 @@ import useDeleteRepositoryMutation from "../../hooks/useDeleteRepositoryMutation
 import AlertDialogConfirmation from "../../components/ui/AlertDialogConfirmation";
 import { AuthContext } from "../../context/auth/AuthContext";
 import Loading from "../../components/ui/Loading";
+import Head from "next/head";
 
 function ContributionsPage() {
   const { session } = useContext(AuthContext);
 
-  const { newCourseModal: { onOpen } } = useContext(UIContext);
+  const {
+    newCourseModal: { onOpen },
+  } = useContext(UIContext);
 
-  const repositoryToDelete: MutableRefObject<IRepository | undefined> = useRef();
+  const repositoryToDelete: MutableRefObject<IRepository | undefined> =
+    useRef();
 
-  const { repositoriesQuery } = useUserRepositories({ user: session?.user._id });
+  const { repositoriesQuery } = useUserRepositories({
+    user: session?.user._id,
+  });
 
   const { deleteMutation } = useDeleteRepositoryMutation();
 
@@ -94,42 +100,49 @@ function ContributionsPage() {
   );
 
   return (
-    <PageLayout>
-      <Flex flexDir="column">
-        <Flex mt={2} mx={4} textAlign="center">
-          <Heading fontSize="3xl">Mis Aportes</Heading>
-          <Box flex={1} textAlign="end">
-            <Button colorScheme="whatsapp" onClick={onOpen}>
-              Crear Repositorio
-            </Button>
-          </Box>
-        </Flex>
+    <>
+      <Head>
+        <title>Mis Aportes</title>
+      </Head>
+      <PageLayout>
+        <Flex flexDir="column">
+          <Flex mt={7} mx={10} textAlign="center">
+            <Heading fontSize="3xl">Mis Aportes</Heading>
+            <Box flex={1} textAlign="end">
+              <Button colorScheme="whatsapp" onClick={onOpen}>
+                Crear Repositorio
+              </Button>
+            </Box>
+          </Flex>
 
-        {repositoriesQuery.isLoading ? (
-          <Center mt={20}>
-            <Loading />
-          </Center>
-        ) : (
-          <RepositoriesTable
-            data={Array.from(repositoriesQuery.data || [])}
-            columns={columns}
-            onDeleteRow={(repository) => {
-              repositoryToDelete.current = repository;
-              onOpenAlert();
-            }}
-          />
-        )}
-      </Flex>
-      <AlertDialogConfirmation
-        header="Eliminar Repositorio"
-        body="Está seguro que quiere eliminar el repositorio?"
-        button={{ title: "Eliminar", colorSchema: "red" }}
-        isOpen={isOpenAlert}
-        onClose={onCloseAlert}
-        onConfirm={handleDeleteRepository}
-      />
-      <NewCourseModal />
-    </PageLayout>
+          {repositoriesQuery.isLoading ? (
+            <Center mt={20}>
+              <Loading />
+            </Center>
+          ) : (
+            <Box bg="white" m={10} p={3} borderRadius="20px">
+              <RepositoriesTable
+                data={Array.from(repositoriesQuery.data || [])}
+                columns={columns}
+                onDeleteRow={(repository) => {
+                  repositoryToDelete.current = repository;
+                  onOpenAlert();
+                }}
+              />
+            </Box>
+          )}
+        </Flex>
+        <AlertDialogConfirmation
+          header="Eliminar Repositorio"
+          body="Está seguro que quiere eliminar el repositorio?"
+          button={{ title: "Eliminar", colorSchema: "red" }}
+          isOpen={isOpenAlert}
+          onClose={onCloseAlert}
+          onConfirm={handleDeleteRepository}
+        />
+        <NewCourseModal />
+      </PageLayout>
+    </>
   );
 }
 

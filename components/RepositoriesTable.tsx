@@ -57,7 +57,7 @@ const RepositoriesTable = ({ data, columns, onDeleteRow }: Props) => {
 
   return (
     <>
-      <TableContainer px={10} py={5}>
+      <TableContainer>
         <Table>
           <Thead>
             {table.getHeaderGroups().map((headerGroup) => (

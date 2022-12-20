@@ -1,7 +1,15 @@
 import { useMemo } from "react";
-import { GetServerSideProps } from 'next'
+import { GetServerSideProps } from "next";
 import Link from "next/link";
-import { Button, Center, Heading, Tag, Text, Tooltip } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Center,
+  Heading,
+  Tag,
+  Text,
+  Tooltip,
+} from "@chakra-ui/react";
 import { ColumnDef } from "@tanstack/react-table";
 
 import PageLayout from "../../components/layouts/PageLayout";
@@ -13,12 +21,13 @@ import { getCleanDomain } from "../../utils/url";
 import { IUser } from "../../types/user";
 import { dbCourses } from "../../database";
 import { ICourse } from "../../types/course";
+import Head from "next/head";
 
 type Props = {
   course: ICourse;
-}
+};
 
-function CourseResourcePage({course}:Props) {
+function CourseResourcePage({ course }: Props) {
   const { repositoriesQuery } = useCourseRepositories({
     course: course._id,
   });
@@ -81,41 +90,48 @@ function CourseResourcePage({course}:Props) {
   );
 
   return (
-    <PageLayout>
-      <Heading>
-        Recursos de {course.name}
-      </Heading>
-      {repositoriesQuery.isLoading ? (
-        <Center mt={20}>
-          <Loading />
-        </Center>
-      ) : !repositoriesQuery.data?.data ? (
-        <Text>No se encuentran repositorios en esta materia</Text>
-      ) : (
-        <RepositoriesTable
-          data={Array.from(repositoriesQuery.data?.data || [])}
-          columns={columns}
-        />
-      )}
-    </PageLayout>
+    <>
+      <Head>
+        <title>{course.name}</title>
+      </Head>
+      <PageLayout>
+        <Text mt={7} fontSize="2xl" textAlign="center">
+          Recursos de {course.name}
+        </Text>
+        <Box bg="white" m={10} p={3} borderRadius="20px">
+          {repositoriesQuery.isLoading ? (
+            <Center mt={20}>
+              <Loading />
+            </Center>
+          ) : !repositoriesQuery.data?.data ? (
+            <Text>No se encuentran repositorios en esta materia</Text>
+          ) : (
+            <RepositoriesTable
+              data={Array.from(repositoriesQuery.data?.data || [])}
+              columns={columns}
+            />
+          )}
+        </Box>
+      </PageLayout>
+    </>
   );
 }
 
-export const getServerSideProps: GetServerSideProps = async ({query}) => {
-  const { id } = query as {id: string};
+export const getServerSideProps: GetServerSideProps = async ({ query }) => {
+  const { id } = query as { id: string };
   const course = await dbCourses.getCourseById(id);
 
-  if(!course) {
+  if (!course) {
     return {
-      notFound: true
-    }
+      notFound: true,
+    };
   }
 
   return {
     props: {
-      course
-    }
-  }
-}
+      course,
+    },
+  };
+};
 
 export default CourseResourcePage;
