@@ -2,7 +2,7 @@ import { useContext } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useToast } from "@chakra-ui/react";
 
-import repositoryApi from "../api/repositoryApi";
+import repositoryApi from "../axiosConfig/repositoryApi";
 import { IRepository } from "../types/repository";
 import { AuthContext } from "../context/auth/AuthContext";
 

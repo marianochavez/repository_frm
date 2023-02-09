@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import repositoryApi from "../api/repositoryApi";
+import repositoryApi from "../axiosConfig/repositoryApi";
 import { IRepository } from "../types/repository";
 
 interface GetRepositoriesProps extends Props {}
