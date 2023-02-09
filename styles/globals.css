@@ -13,23 +13,3 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
 }
-
-.home-bg {
-  background: hsla(169, 76%, 48%, 1);
-  background: linear-gradient(
-    315deg,
-    hsla(169, 76%, 48%, 1) 50%,
-    hsla(67, 87%, 82%, 1) 50%
-  );
-  background: -moz-linear-gradient(
-    315deg,
-    hsla(169, 76%, 48%, 1) 50%,
-    hsla(67, 87%, 82%, 1) 50%
-  );
-  background: -webkit-linear-gradient(
-    315deg,
-    hsla(169, 76%, 48%, 1) 50%,
-    hsla(67, 87%, 82%, 1) 50%
-  );
-  filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#1ED7B5", endColorstr="#F0F9A7", GradientType=1 );
-}

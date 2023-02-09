@@ -1,17 +1,20 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { db, dbSeed } from '../../database'
-import ICourse from '../../models/Course';
+import Course from '../../models/Course';
 import Department from '../../models/Department';
-import IRepository from '../../models/Repository';
-import IUser from '../../models/User';
+import Repository from '../../models/Repository';
+import User from '../../models/User';
 
 type Data = {
     message: string
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+    if (process.env.NODE_ENV === "production") {
+        return res.status(403).json({message: "Forbidden! developer mode only."})
+    }
+    const { users, departments } = dbSeed.initialData;
     await db.connect();
-    const {users, departments} = dbSeed.initialData;
 
     await User.deleteMany();
     await User.insertMany(users);
@@ -31,5 +34,5 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 
     await db.disconnect();
 
-    res.status(200).json({message: "Success seed"})
+    res.status(200).json({ message: "Success seed" })
 }

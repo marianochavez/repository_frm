@@ -8,7 +8,7 @@ type Props = {
 
 const PageLayout = ({ children }: Props) => {
   return (
-    <Box className="home-bg" minH="100vh">
+    <Box minH="100vh">
       <Navbar />
       <Sidebar />
       {children}
