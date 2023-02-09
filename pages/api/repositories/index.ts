@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getSession } from 'next-auth/react';
+import { getServerSession } from "next-auth/next"
 
 import { dbCourses, dbRepositories } from '../../../database';
 import { IRepository } from '../../../types/repository';
+import { authOptions } from '../auth/[...nextauth]';
 
 type Data = {
     data: IRepository[] | IRepository;
@@ -47,7 +48,9 @@ async function getRepositories(req: NextApiRequest, res: NextApiResponse<Data | 
 async function createRepository(req: NextApiRequest, res: NextApiResponse<Data | DataError>) {
     const { url = "", course = "" } = req.body as { url: string; course: string; user: string };
 
-    const session = await getSession({ req });
+    const session = await getServerSession(req,res,authOptions);
+    console.log(session);
+    
 
     if (!session) {
         return res.status(401).end(`Unauthorized`);

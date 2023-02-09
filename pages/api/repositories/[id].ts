@@ -1,8 +1,9 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { getSession } from 'next-auth/react';
+import { getServerSession } from 'next-auth';
 
 import { dbRepositories } from '../../../database';
 import { IRepository } from '../../../types/repository';
+import { authOptions } from '../auth/[...nextauth]';
 
 type Data = {
     data: IRepository[] | IRepository;
@@ -26,7 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 async function deleteRepository(req: NextApiRequest, res: NextApiResponse<Data | DataError>) {
     const { id = "" } = req.query as { id: string };
 
-    const session = await getSession({ req });
+    const session = await getServerSession(req,res,authOptions);
 
     if (!session) {
         return res.status(401).end(`Unauthorized`);

@@ -1,8 +1,10 @@
+import type { NextAuthOptions } from 'next-auth'
+
 import NextAuth from "next-auth"
 import AzureADProvider from "next-auth/providers/azure-ad"
 import { dbUsers } from "../../../database"
 
-export default NextAuth({
+export const authOptions: NextAuthOptions = {
   providers: [
     AzureADProvider({
       clientId: process.env.AZURE_AD_CLIENT_ID || "",
@@ -34,4 +36,6 @@ export default NextAuth({
       return token;
     }
   }
-})
+}
+
+export default NextAuth(authOptions);
